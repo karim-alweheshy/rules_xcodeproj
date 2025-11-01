@@ -258,6 +258,10 @@ FF01000000000000000001\#(byteHexStrings[index]!) \#
 
             /// A `XCVersionGroup` or child `PBXFileReference`.
             case coreData = "3"
+
+            /// A `PBXFileReference` with `lastKnownFileType = folder`.
+            /// Used for folder references that Xcode scans at runtime.
+            case folderReference = "4"
         }
 
         public static func mainGroup(_ path: String) -> String {

@@ -3,6 +3,7 @@ import PBXProj
 extension ElementCreator {
     struct CreateGroupChild {
         private let createFile: CreateFile
+        private let createFolderReference: CreateFolderReference
         private let createGroup: CreateGroup
         private let createInlineBazelGeneratedFiles:
             ElementCreator.CreateInlineBazelGeneratedFiles
@@ -16,6 +17,7 @@ extension ElementCreator {
         ///     `callAsFunction()`.
         init(
             createFile: CreateFile,
+            createFolderReference: CreateFolderReference,
             createGroup: CreateGroup,
             createInlineBazelGeneratedFiles:
                 ElementCreator.CreateInlineBazelGeneratedFiles,
@@ -24,6 +26,7 @@ extension ElementCreator {
             callable: @escaping Callable
         ) {
             self.createFile = createFile
+            self.createFolderReference = createFolderReference
             self.createGroup = createGroup
             self.createInlineBazelGeneratedFiles =
                 createInlineBazelGeneratedFiles
@@ -42,6 +45,7 @@ extension ElementCreator {
                 /*parentBazelPath:*/ parentBazelPath,
                 /*parentBazelPathType:*/ parentBazelPathType,
                 /*createFile:*/ createFile,
+                /*createFolderReference:*/ createFolderReference,
                 /*createGroup:*/ createGroup,
                 /*createGroupChild:*/ self,
                 /*createInlineBazelGeneratedFiles:*/
@@ -61,6 +65,7 @@ extension ElementCreator.CreateGroupChild {
         _ parentBazelPath: BazelPath,
         _ parentBazelPathType: BazelPathType,
         _ createFile: ElementCreator.CreateFile,
+        _ createFolderReference: ElementCreator.CreateFolderReference,
         _ createGroup: ElementCreator.CreateGroup,
         _ createGroupChild: ElementCreator.CreateGroupChild,
         _ createInlineBazelGeneratedFiles:
@@ -74,6 +79,7 @@ extension ElementCreator.CreateGroupChild {
         parentBazelPath: BazelPath,
         parentBazelPathType: BazelPathType,
         createFile: ElementCreator.CreateFile,
+        createFolderReference: ElementCreator.CreateFolderReference,
         createGroup: ElementCreator.CreateGroup,
         createGroupChild: ElementCreator.CreateGroupChild,
         createInlineBazelGeneratedFiles:
@@ -83,6 +89,17 @@ extension ElementCreator.CreateGroupChild {
     ) -> GroupChild {
         switch node {
         case .group(let name, let children):
+            // Check if this folder should be treated as a folder reference
+            if shouldUseFolderReference(name: name, parentBazelPath: parentBazelPath) {
+                return .elementAndChildren(
+                    createFolderReference(
+                        name: name,
+                        parentBazelPath: parentBazelPath,
+                        bazelPathType: parentBazelPathType
+                    )
+                )
+            }
+
             let (basenameWithoutExt, ext) = name.splitExtension()
             switch ext {
             case "lproj":
@@ -270,5 +287,31 @@ extension GroupChild.ElementAndChildren: Equatable {
             rhs.knownRegions,
             rhs.resolvedRepositories
         )
+    }
+}
+
+// MARK: - Folder Reference Detection
+
+extension ElementCreator.CreateGroupChild {
+    /// Determines if a group should be treated as a folder reference
+    /// instead of recursively enumerating its files.
+    ///
+    /// TODO: This should be controlled by a configuration flag (use_folder_references)
+    /// For now, it's disabled by default. Enable for testing by changing the return value.
+    private static func shouldUseFolderReference(
+        name: String,
+        parentBazelPath: BazelPath
+    ) -> Bool {
+        // Only consider top-level folders (parent path is empty or root)
+        guard parentBazelPath.path.isEmpty else {
+            return false
+        }
+
+        // TODO: Add configuration flag check here
+        // For now, always return false (disabled)
+        // To test folder references, change this to true for specific folders:
+        // return ["Sources", "external", "bazel-out"].contains(name)
+
+        return false
     }
 }

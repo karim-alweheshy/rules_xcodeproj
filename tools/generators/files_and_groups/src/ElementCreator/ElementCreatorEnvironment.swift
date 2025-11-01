@@ -199,8 +199,13 @@ extension ElementCreator.Environment {
             callable: createInlineBazelGeneratedFilesCallable
         )
 
+        let createFolderReference = ElementCreator.CreateFolderReference(
+            createIdentifier: createIdentifier
+        )
+
         let createGroupChild = ElementCreator.CreateGroupChild(
             createFile: createFile,
+            createFolderReference: createFolderReference,
             createGroup: createGroup,
             createInlineBazelGeneratedFiles: createInlineBazelGeneratedFiles,
             createLocalizedFiles: createLocalizedFiles,
