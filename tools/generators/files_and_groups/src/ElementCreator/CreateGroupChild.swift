@@ -297,7 +297,7 @@ extension ElementCreator.CreateGroupChild {
     /// instead of recursively enumerating its files.
     ///
     /// TODO: This should be controlled by a configuration flag (use_folder_references)
-    /// For now, it's disabled by default. Enable for testing by changing the return value.
+    /// Currently enabled for testing with common top-level source directories.
     private static func shouldUseFolderReference(
         name: String,
         parentBazelPath: BazelPath
@@ -307,11 +307,16 @@ extension ElementCreator.CreateGroupChild {
             return false
         }
 
-        // TODO: Add configuration flag check here
-        // For now, always return false (disabled)
-        // To test folder references, change this to true for specific folders:
-        // return ["Sources", "external", "bazel-out"].contains(name)
+        // Enable folder references for common top-level source directories
+        // This provides significant file size reduction for large projects
+        let folderReferenceDirectories = [
+            "Sources",
+            "src",
+            "lib",
+            "external",
+            "bazel-out"
+        ]
 
-        return false
+        return folderReferenceDirectories.contains(name)
     }
 }
