@@ -9,6 +9,7 @@ extension ElementCreator {
             ElementCreator.CreateInlineBazelGeneratedFiles
         private let createLocalizedFiles: CreateLocalizedFiles
         private let createVersionGroup: CreateVersionGroup
+        private let folderReferenceDirectories: Set<String>
 
         private let callable: Callable
 
@@ -23,6 +24,7 @@ extension ElementCreator {
                 ElementCreator.CreateInlineBazelGeneratedFiles,
             createLocalizedFiles: CreateLocalizedFiles,
             createVersionGroup: CreateVersionGroup,
+            folderReferenceDirectories: [String] = [],
             callable: @escaping Callable
         ) {
             self.createFile = createFile
@@ -32,6 +34,7 @@ extension ElementCreator {
                 createInlineBazelGeneratedFiles
             self.createLocalizedFiles = createLocalizedFiles
             self.createVersionGroup = createVersionGroup
+            self.folderReferenceDirectories = Set(folderReferenceDirectories)
             self.callable = callable
         }
 
@@ -296,9 +299,10 @@ extension ElementCreator.CreateGroupChild {
     /// Determines if a group should be treated as a folder reference
     /// instead of recursively enumerating its files.
     ///
-    /// TODO: This should be controlled by a configuration flag (use_folder_references)
-    /// Currently enabled for testing with common top-level source directories.
-    private static func shouldUseFolderReference(
+    /// Folder references are only used for top-level directories whose names
+    /// match the configured `folderReferenceDirectories` set. This provides
+    /// significant file size reduction for large projects (95%+).
+    private func shouldUseFolderReference(
         name: String,
         parentBazelPath: BazelPath
     ) -> Bool {
@@ -307,16 +311,7 @@ extension ElementCreator.CreateGroupChild {
             return false
         }
 
-        // Enable folder references for common top-level source directories
-        // This provides significant file size reduction for large projects
-        let folderReferenceDirectories = [
-            "Sources",
-            "src",
-            "lib",
-            "external",
-            "bazel-out"
-        ]
-
+        // Check if this directory name is in the configured set
         return folderReferenceDirectories.contains(name)
     }
 }

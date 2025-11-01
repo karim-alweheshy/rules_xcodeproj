@@ -27,7 +27,8 @@ struct ElementCreator {
                 try environment.readSelectedModelVersionsFile(
                     arguments.selectedModelVersionsFile
                 ),
-            workspace: arguments.workspace
+            workspace: arguments.workspace,
+            folderReferenceDirectories: arguments.folderReferenceDirectories
         )
         let rootElements = createRootElements(for: pathTree)
 

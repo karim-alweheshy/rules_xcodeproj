@@ -100,7 +100,8 @@ extension ElementCreator.Environment {
         includeCompileStub: Bool,
         installPath: String,
         selectedModelVersions: [BazelPath: String],
-        workspace: String
+        workspace: String,
+        folderReferenceDirectories: [String] = []
     ) -> ElementCreator.CreateRootElements {
         let createAttributes = ElementCreator.CreateAttributes(
             executionRoot: executionRoot,
@@ -210,6 +211,7 @@ extension ElementCreator.Environment {
             createInlineBazelGeneratedFiles: createInlineBazelGeneratedFiles,
             createLocalizedFiles: createLocalizedFiles,
             createVersionGroup: createVersionGroup,
+            folderReferenceDirectories: folderReferenceDirectories,
             callable: createGroupChildCallable
         )
 
