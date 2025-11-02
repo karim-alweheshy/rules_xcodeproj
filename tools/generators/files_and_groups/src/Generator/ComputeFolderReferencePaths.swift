@@ -37,10 +37,20 @@ extension Generator {
         }
 
         // Return directories that exceed the threshold
-        return Set(
+        let folderReferences = Set(
             topLevelDirectoryCounts
                 .filter { $0.value >= threshold }
                 .map { $0.key }
         )
+
+        // Debug: Print which folders will use folder references
+        if !folderReferences.isEmpty {
+            print("[folder_references] Using folder references for: \(folderReferences.sorted().joined(separator: ", "))")
+            for (dir, count) in topLevelDirectoryCounts.sorted(by: { $0.key < $1.key }) {
+                print("[folder_references]   \(dir): \(count) files \(folderReferences.contains(dir) ? "✓" : "✗")")
+            }
+        }
+
+        return folderReferences
     }
 }
