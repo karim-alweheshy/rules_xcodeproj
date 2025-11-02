@@ -41,15 +41,5 @@ Path to a file that contains a JSON representation of \
             transform: { $0 == "" ? nil : $0 == "1" }
         )
         var usesTabs: Bool?
-
-        @Option(
-            parsing: .upToNextOption,
-            help: """
-Top-level directory names to treat as folder references instead of \
-recursively enumerating files. This significantly reduces .pbxproj file size \
-for large projects. Example: Sources src lib external bazel-out
-"""
-        )
-        var folderReferenceDirectories: [String] = []
     }
 }

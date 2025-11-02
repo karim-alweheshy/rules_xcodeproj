@@ -15,6 +15,11 @@ extension Generator {
             _ generatedPaths: [GeneratedPath]
         ) -> [PathTreeNode]
 
+        let computeFolderReferencePaths: (
+            _ paths: [BazelPath],
+            _ threshold: Int
+        ) -> Set<String>
+
         let createTargetFileObjects: CreateTargetFileObjects
 
         let elements: ElementCreator.Environment
@@ -46,6 +51,7 @@ extension Generator.Environment {
     static let `default` = Self(
         calculateTargetFilesPartial: Generator.CalculateTargetFilesPartial(),
         calculatePathTree: Generator.calculatePathTree,
+        computeFolderReferencePaths: Generator.computeFolderReferencePaths,
         createTargetFileObjects: Generator.CreateTargetFileObjects(
             createShardTargetFileObjects:
                 Generator.CreateShardTargetFileObjects(

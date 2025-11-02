@@ -10,7 +10,8 @@ struct ElementCreator {
     func create(
         pathTree: [PathTreeNode],
         arguments: Arguments,
-        compileStubNeeded: Bool
+        compileStubNeeded: Bool,
+        folderReferenceDirectories: [String] = []
     ) throws -> CreatedElements {
         let executionRoot = try environment.readExecutionRootFile(
             arguments.executionRootFile
@@ -28,7 +29,7 @@ struct ElementCreator {
                     arguments.selectedModelVersionsFile
                 ),
             workspace: arguments.workspace,
-            folderReferenceDirectories: arguments.folderReferenceDirectories
+            folderReferenceDirectories: folderReferenceDirectories
         )
         let rootElements = createRootElements(for: pathTree)
 

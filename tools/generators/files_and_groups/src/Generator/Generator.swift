@@ -20,9 +20,19 @@ struct Generator {
     /// Then it writes them to disk.
     func generate(arguments: Arguments) async throws {
         // FIXME: Do these in parallel as tasks
+        let paths = environment.readFilePathsFile(arguments.filePathsFile)
+
+        // Automatically compute which top-level directories should use
+        // folder references based on file count
+        let folderReferenceDirectories = Array(
+            environment.computeFolderReferencePaths(
+                paths: paths,
+                threshold: 10 // Use folder reference if dir has 10+ files
+            )
+        )
+
         let pathTree = try await environment.calculatePathTree(
-            /*paths:*/
-                environment.readFilePathsFile(arguments.filePathsFile),
+            /*paths:*/ paths,
             /*generatedPaths:*/ environment.readGeneratedFilePathsFile(
                 arguments.generatedFilePathsFile
             )
@@ -34,7 +44,8 @@ struct Generator {
             return try elementsCreator.create(
                 pathTree: pathTree,
                 arguments: arguments.elementCreatorArguments,
-                compileStubNeeded: arguments.compileStubNeeded
+                compileStubNeeded: arguments.compileStubNeeded,
+                folderReferenceDirectories: folderReferenceDirectories
             )
         }
 
