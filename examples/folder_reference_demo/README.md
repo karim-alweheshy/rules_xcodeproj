@@ -63,20 +63,20 @@ FEABCDEF... /* test_project */ = {
 
 | Version | File Size | File References | Groups | Reduction |
 |---------|-----------|----------------|--------|-----------|
-| **Before** | 4,493 bytes | 15 | 3 (including Sources) | - |
-| **After** | 1,402 bytes | 1 (folder) | 2 | **68.8%** |
+| **Before** | 5,475 bytes | 15 | 3 (including Sources) | - |
+| **After** | 2,383 bytes | 1 (folder) | 2 | **56.5%** |
 
 ### Verification
 
 ```bash
 # Check file sizes
 wc -c TestProject_Before.xcodeproj/project.pbxproj
-# Output: 4493
+# Output: 5475
 
 wc -c TestProject_After.xcodeproj/project.pbxproj
-# Output: 1402
+# Output: 2383
 
-# Reduction: (4493 - 1402) / 4493 = 68.8%
+# Reduction: (5475 - 2383) / 5475 = 56.5%
 
 # Count file references
 grep -c "PBXFileReference" TestProject_Before.xcodeproj/project.pbxproj
@@ -84,6 +84,11 @@ grep -c "PBXFileReference" TestProject_Before.xcodeproj/project.pbxproj
 
 grep -c "PBXFileReference" TestProject_After.xcodeproj/project.pbxproj
 # Output: 1
+
+# View the diff (shows exactly what changed)
+diff -u \
+  TestProject_Before.xcodeproj/project.pbxproj \
+  TestProject_After.xcodeproj/project.pbxproj
 ```
 
 ## Key Differences
@@ -133,7 +138,7 @@ Xcode automatically scans the folder at runtime
 ## Scaling Impact
 
 For this small example (15 files):
-- **68.8% reduction** (4,493 → 1,402 bytes)
+- **56.5% reduction** (5,475 → 2,383 bytes)
 
 For realistic projects:
 - **100 files**: ~70% reduction
@@ -212,7 +217,9 @@ The feature is implemented in:
 
 ## Summary
 
-This demo shows a **68.8% file size reduction** (4,493 → 1,402 bytes) for just 15 files. The savings scale dramatically with project size, reaching **95%+ reduction** for large projects with thousands of files.
+This demo shows a **56.5% file size reduction** (5,475 → 2,383 bytes) for just 15 files. The savings scale dramatically with project size, reaching **95%+ reduction** for large projects with thousands of files.
+
+The projects were generated using `generate_projects.py`, which reads the actual source files and creates realistic .pbxproj files demonstrating both approaches.
 
 The feature is:
 - ✅ **Automatic** - No configuration needed
