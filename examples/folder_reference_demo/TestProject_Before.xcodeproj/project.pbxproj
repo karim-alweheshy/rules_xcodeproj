@@ -1,0 +1,92 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXFileReference section */
+		FE1234567890ABCDEF000001 /* File1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File1.swift; sourceTree = "<group>"; };
+		FE1234567890ABCDEF000002 /* File2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File2.swift; sourceTree = "<group>"; };
+		FE1234567890ABCDEF000003 /* File3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File3.swift; sourceTree = "<group>"; };
+		FE1234567890ABCDEF000004 /* File4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File4.swift; sourceTree = "<group>"; };
+		FE1234567890ABCDEF000005 /* File5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File5.swift; sourceTree = "<group>"; };
+		FE1234567890ABCDEF000006 /* File6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File6.swift; sourceTree = "<group>"; };
+		FE1234567890ABCDEF000007 /* File7.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File7.swift; sourceTree = "<group>"; };
+		FE1234567890ABCDEF000008 /* File8.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File8.swift; sourceTree = "<group>"; };
+		FE1234567890ABCDEF000009 /* File9.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File9.swift; sourceTree = "<group>"; };
+		FE1234567890ABCDEF000010 /* File10.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File10.swift; sourceTree = "<group>"; };
+		FE1234567890ABCDEF000011 /* File11.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File11.swift; sourceTree = "<group>"; };
+		FE1234567890ABCDEF000012 /* File12.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File12.swift; sourceTree = "<group>"; };
+		FE1234567890ABCDEF000013 /* File13.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File13.swift; sourceTree = "<group>"; };
+		FE1234567890ABCDEF000014 /* File14.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File14.swift; sourceTree = "<group>"; };
+		FE1234567890ABCDEF000015 /* File15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File15.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		FF0000000000000000000003 /* TestProject */ = {
+			isa = PBXGroup;
+			children = (
+				FEABCDEF0123456789ABCDEF /* test_project */,
+			);
+			name = TestProject;
+			sourceTree = "<group>";
+		};
+		FEABCDEF0123456789ABCDEF /* test_project */ = {
+			isa = PBXGroup;
+			children = (
+				FE9999999999999999999999 /* Sources */,
+			);
+			path = test_project;
+			sourceTree = "<group>";
+		};
+		FE9999999999999999999999 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				FE1234567890ABCDEF000001 /* File1.swift */,
+				FE1234567890ABCDEF000002 /* File2.swift */,
+				FE1234567890ABCDEF000003 /* File3.swift */,
+				FE1234567890ABCDEF000004 /* File4.swift */,
+				FE1234567890ABCDEF000005 /* File5.swift */,
+				FE1234567890ABCDEF000006 /* File6.swift */,
+				FE1234567890ABCDEF000007 /* File7.swift */,
+				FE1234567890ABCDEF000008 /* File8.swift */,
+				FE1234567890ABCDEF000009 /* File9.swift */,
+				FE1234567890ABCDEF000010 /* File10.swift */,
+				FE1234567890ABCDEF000011 /* File11.swift */,
+				FE1234567890ABCDEF000012 /* File12.swift */,
+				FE1234567890ABCDEF000013 /* File13.swift */,
+				FE1234567890ABCDEF000014 /* File14.swift */,
+				FE1234567890ABCDEF000015 /* File15.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		FF0000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+			};
+			buildConfigurationList = FF0000000000000000000002 /* Build configuration list for PBXProject */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = FF0000000000000000000003 /* TestProject */;
+			productRefGroup = FF0000000000000000000004 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+	};
+	rootObject = FF0000000000000000000001 /* Project object */;
+}
