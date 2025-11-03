@@ -1,0 +1,106 @@
+// Example: Traditional approach (before folder references)
+// For a Sources/ directory with 28 files
+// This is what rules_xcodeproj generated BEFORE the folder reference feature
+
+// File objects: { path1, path2, path3, ... } (snippet)
+		FE1A2B3C4D5E6F7890ABCDEF /* File1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File1.swift; sourceTree = "<group>"; };
+		FE2B3C4D5E6F7890ABCDEF01 /* File2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File2.swift; sourceTree = "<group>"; };
+		FE3C4D5E6F7890ABCDEF0123 /* File3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File3.swift; sourceTree = "<group>"; };
+		FE4D5E6F7890ABCDEF012345 /* File4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File4.swift; sourceTree = "<group>"; };
+		FE5E6F7890ABCDEF01234567 /* File5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File5.swift; sourceTree = "<group>"; };
+		FE6F7890ABCDEF0123456789 /* File6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File6.swift; sourceTree = "<group>"; };
+		FE7890ABCDEF0123456789AB /* File7.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File7.swift; sourceTree = "<group>"; };
+		FE890ABCDEF0123456789ABCD /* File8.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File8.swift; sourceTree = "<group>"; };
+		FE90ABCDEF0123456789ABCDE /* File9.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File9.swift; sourceTree = "<group>"; };
+		FEA0ABCDEF0123456789ABCDEF /* File10.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File10.swift; sourceTree = "<group>"; };
+		FEB0ABCDEF0123456789ABCDEF /* File11.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File11.swift; sourceTree = "<group>"; };
+		FEC0ABCDEF0123456789ABCDEF /* File12.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File12.swift; sourceTree = "<group>"; };
+		FED0ABCDEF0123456789ABCDEF /* File13.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File13.swift; sourceTree = "<group>"; };
+		FEE0ABCDEF0123456789ABCDEF /* File14.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File14.swift; sourceTree = "<group>"; };
+		FEF0ABCDEF0123456789ABCDEF /* File15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File15.swift; sourceTree = "<group>"; };
+		FE01ABCDEF0123456789ABCDEF /* File16.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File16.swift; sourceTree = "<group>"; };
+		FE02ABCDEF0123456789ABCDEF /* File17.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File17.swift; sourceTree = "<group>"; };
+		FE03ABCDEF0123456789ABCDEF /* File18.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File18.swift; sourceTree = "<group>"; };
+		FE04ABCDEF0123456789ABCDEF /* File19.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File19.swift; sourceTree = "<group>"; };
+		FE05ABCDEF0123456789ABCDEF /* File20.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File20.swift; sourceTree = "<group>"; };
+		FE06ABCDEF0123456789ABCDEF /* File21.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File21.swift; sourceTree = "<group>"; };
+		FE07ABCDEF0123456789ABCDEF /* File22.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File22.swift; sourceTree = "<group>"; };
+		FE08ABCDEF0123456789ABCDEF /* File23.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File23.swift; sourceTree = "<group>"; };
+		FE09ABCDEF0123456789ABCDEF /* File24.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File24.swift; sourceTree = "<group>"; };
+		FE0AABCDEF0123456789ABCDEF /* File25.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File25.swift; sourceTree = "<group>"; };
+		FE0BABCDEF0123456789ABCDEF /* File26.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File26.swift; sourceTree = "<group>"; };
+		FE0CABCDEF0123456789ABCDEF /* File27.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File27.swift; sourceTree = "<group>"; };
+		FE0DABCDEF0123456789ABCDEF /* File28.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File28.swift; sourceTree = "<group>"; };
+
+// Group structure
+		FEABCDEF0123456789ABCDEF01 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				FE1A2B3C4D5E6F7890ABCDEF /* File1.swift */,
+				FE2B3C4D5E6F7890ABCDEF01 /* File2.swift */,
+				FE3C4D5E6F7890ABCDEF0123 /* File3.swift */,
+				FE4D5E6F7890ABCDEF012345 /* File4.swift */,
+				FE5E6F7890ABCDEF01234567 /* File5.swift */,
+				FE6F7890ABCDEF0123456789 /* File6.swift */,
+				FE7890ABCDEF0123456789AB /* File7.swift */,
+				FE890ABCDEF0123456789ABCD /* File8.swift */,
+				FE90ABCDEF0123456789ABCDE /* File9.swift */,
+				FEA0ABCDEF0123456789ABCDEF /* File10.swift */,
+				FEB0ABCDEF0123456789ABCDEF /* File11.swift */,
+				FEC0ABCDEF0123456789ABCDEF /* File12.swift */,
+				FED0ABCDEF0123456789ABCDEF /* File13.swift */,
+				FEE0ABCDEF0123456789ABCDEF /* File14.swift */,
+				FEF0ABCDEF0123456789ABCDEF /* File15.swift */,
+				FE01ABCDEF0123456789ABCDEF /* File16.swift */,
+				FE02ABCDEF0123456789ABCDEF /* File17.swift */,
+				FE03ABCDEF0123456789ABCDEF /* File18.swift */,
+				FE04ABCDEF0123456789ABCDEF /* File19.swift */,
+				FE05ABCDEF0123456789ABCDEF /* File20.swift */,
+				FE06ABCDEF0123456789ABCDEF /* File21.swift */,
+				FE07ABCDEF0123456789ABCDEF /* File22.swift */,
+				FE08ABCDEF0123456789ABCDEF /* File23.swift */,
+				FE09ABCDEF0123456789ABCDEF /* File24.swift */,
+				FE0AABCDEF0123456789ABCDEF /* File25.swift */,
+				FE0BABCDEF0123456789ABCDEF /* File26.swift */,
+				FE0CABCDEF0123456789ABCDEF /* File27.swift */,
+				FE0DABCDEF0123456789ABCDEF /* File28.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+
+// Build phase entries (for Sources build phase)
+		BF1A2B3C4D5E6F7890ABCDEF /* File1.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE1A2B3C4D5E6F7890ABCDEF /* File1.swift */; };
+		BF2B3C4D5E6F7890ABCDEF01 /* File2.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE2B3C4D5E6F7890ABCDEF01 /* File2.swift */; };
+		BF3C4D5E6F7890ABCDEF0123 /* File3.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3C4D5E6F7890ABCDEF0123 /* File3.swift */; };
+		BF4D5E6F7890ABCDEF012345 /* File4.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE4D5E6F7890ABCDEF012345 /* File4.swift */; };
+		BF5E6F7890ABCDEF01234567 /* File5.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE5E6F7890ABCDEF01234567 /* File5.swift */; };
+		BF6F7890ABCDEF0123456789 /* File6.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE6F7890ABCDEF0123456789 /* File6.swift */; };
+		BF7890ABCDEF0123456789AB /* File7.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE7890ABCDEF0123456789AB /* File7.swift */; };
+		BF890ABCDEF0123456789ABCD /* File8.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE890ABCDEF0123456789ABCD /* File8.swift */; };
+		BF90ABCDEF0123456789ABCDE /* File9.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE90ABCDEF0123456789ABCDE /* File9.swift */; };
+		BFA0ABCDEF0123456789ABCDEF /* File10.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEA0ABCDEF0123456789ABCDEF /* File10.swift */; };
+		BFB0ABCDEF0123456789ABCDEF /* File11.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEB0ABCDEF0123456789ABCDEF /* File11.swift */; };
+		BFC0ABCDEF0123456789ABCDEF /* File12.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC0ABCDEF0123456789ABCDEF /* File12.swift */; };
+		BFD0ABCDEF0123456789ABCDEF /* File13.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED0ABCDEF0123456789ABCDEF /* File13.swift */; };
+		BFE0ABCDEF0123456789ABCDEF /* File14.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEE0ABCDEF0123456789ABCDEF /* File14.swift */; };
+		BFF0ABCDEF0123456789ABCDEF /* File15.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF0ABCDEF0123456789ABCDEF /* File15.swift */; };
+		BF01ABCDEF0123456789ABCDEF /* File16.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE01ABCDEF0123456789ABCDEF /* File16.swift */; };
+		BF02ABCDEF0123456789ABCDEF /* File17.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE02ABCDEF0123456789ABCDEF /* File17.swift */; };
+		BF03ABCDEF0123456789ABCDEF /* File18.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE03ABCDEF0123456789ABCDEF /* File18.swift */; };
+		BF04ABCDEF0123456789ABCDEF /* File19.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE04ABCDEF0123456789ABCDEF /* File19.swift */; };
+		BF05ABCDEF0123456789ABCDEF /* File20.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE05ABCDEF0123456789ABCDEF /* File20.swift */; };
+		BF06ABCDEF0123456789ABCDEF /* File21.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE06ABCDEF0123456789ABCDEF /* File21.swift */; };
+		BF07ABCDEF0123456789ABCDEF /* File22.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE07ABCDEF0123456789ABCDEF /* File22.swift */; };
+		BF08ABCDEF0123456789ABCDEF /* File23.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE08ABCDEF0123456789ABCDEF /* File23.swift */; };
+		BF09ABCDEF0123456789ABCDEF /* File24.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE09ABCDEF0123456789ABCDEF /* File24.swift */; };
+		BF0AABCDEF0123456789ABCDEF /* File25.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0AABCDEF0123456789ABCDEF /* File25.swift */; };
+		BF0BABCDEF0123456789ABCDEF /* File26.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0BABCDEF0123456789ABCDEF /* File26.swift */; };
+		BF0CABCDEF0123456789ABCDEF /* File27.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0CABCDEF0123456789ABCDEF /* File27.swift */; };
+		BF0DABCDEF0123456789ABCDEF /* File28.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0DABCDEF0123456789ABCDEF /* File28.swift */; };
+
+// RESULT:
+// - 28 file reference objects (28 * ~140 bytes = 3,920 bytes)
+// - 1 group object with 28 children (1 * ~1,400 bytes = 1,400 bytes)
+// - 28 build file objects (28 * ~140 bytes = 3,920 bytes)
+// TOTAL: ~9,240 bytes for this one directory with 28 files
