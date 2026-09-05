@@ -116,16 +116,23 @@ EOF
 run_generator_mode unset UNSET UNSET bp _dbg_build
 run_generator_mode ordinary NO NO bp _dbg_build
 run_generator_mode coverage NO NO bp dbg_coverage YES
-run_generator_mode legacy YES NO bc,bf,bp,bl dbg_swiftuipreviews
-run_generator_mode xojit NO YES bf,bl dbg_swiftuipreviews
-run_generator_mode xojit-coverage NO YES bf,bl dbg_swiftuipreviews YES
-run_generator_mode both YES YES bc,bf,bp,bl dbg_swiftuipreviews
+run_generator_mode legacy YES NO bc,bf,bp,bl,br dbg_swiftuipreviews
+run_generator_mode xojit NO YES bf,bl,br dbg_swiftuipreviews
+run_generator_mode xojit-coverage NO YES bf,bl,br dbg_swiftuipreviews YES
+run_generator_mode both YES YES bc,bf,bp,bl,br dbg_swiftuipreviews
 
 readonly fake_integration_dir="$test_root/copy-integration"
 mkdir -p "$fake_integration_dir"
 cat > "$fake_integration_dir/rsync" <<'EOF'
 #!/bin/bash
-exit 0
+set -euo pipefail
+[[ "${FAKE_RSYNC_COPY:-}" == YES ]] || exit 0
+args=("$@")
+readonly count="${#args[@]}"
+readonly source="${args[count - 2]}"
+readonly destination="${args[count - 1]}"
+mkdir -p "$destination"
+cp -R "$source" "$destination"
 EOF
 chmod +x "$fake_integration_dir/rsync"
 
@@ -252,22 +259,28 @@ run_binary_copy_mode() {
   local enable_previews="$2"
   local enable_xojit_previews="$3"
   local preview_framework_paths="$4"
+  local preview_resource_bundle_paths="${5:-}"
+  local fake_rsync_copy="${6:-NO}"
   local source_dir="$case_dir/product parent"
   local source="$source_dir/libStatic.a"
+  local target_build_dir="$case_dir/build products/Features/Example"
 
-  mkdir -p "$source_dir" "$case_dir/build products"
+  mkdir -p "$source_dir" "$target_build_dir"
   printf 'archive' > "$source"
   env \
     ACTION=build \
     BAZEL_INTEGRATION_DIR="$fake_integration_dir" \
     BAZEL_OUTPUTS_PRODUCT="$source" \
     BAZEL_OUTPUTS_PRODUCT_BASENAME=libStatic.a \
+    BAZEL_PACKAGE_BIN_DIR=Features/Example \
     ENABLE_PREVIEWS="$enable_previews" \
     ENABLE_XOJIT_PREVIEWS="$enable_xojit_previews" \
+    FAKE_RSYNC_COPY="$fake_rsync_copy" \
     FULL_PRODUCT_NAME=libStatic.a \
     PREVIEW_FRAMEWORK_PATHS="$preview_framework_paths" \
+    PREVIEW_RESOURCE_BUNDLE_PATHS="$preview_resource_bundle_paths" \
     PRODUCT_NAME=Static \
-    TARGET_BUILD_DIR="$case_dir/build products" \
+    TARGET_BUILD_DIR="$target_build_dir" \
     WRAPPER_NAME=libStatic.a \
     bash "$copy_outputs_script" _ ""
 }
@@ -364,32 +377,171 @@ assert_link \
   "$second_framework"
 [[ ! -e "$missing_xojit_product_case/build products/Product.framework" ]] || \
   fail "XOJIT copied a product that Xcode owns"
+readonly resource_root="$test_root/resource bundle sources"
+readonly resource_bundle="$resource_root/Mixed Resources.bundle"
+readonly transitive_resource_bundle="$resource_root/PaletteAssets.bundle"
+mkdir -p \
+  "$resource_bundle/en.lproj" \
+  "$resource_bundle/Model.momd" \
+  "$transitive_resource_bundle/Colors"
+printf 'plist' > "$resource_bundle/Info.plist"
+printf 'localized-content' > "$resource_bundle/en.lproj/Localizable.strings"
+printf 'compiled-model-content' > "$resource_bundle/Model.momd/contents"
+printf 'plist' > "$transitive_resource_bundle/Info.plist"
+printf 'palette-content' > "$transitive_resource_bundle/Colors/Accent.colors"
+readonly preview_resource_paths="\"$resource_bundle\" \"$transitive_resource_bundle\""
+readonly preview_resource_destination=Features/Example
 
 readonly binary_ordinary_case="$test_root/copy-binary-ordinary"
+readonly binary_ordinary_target_dir="$binary_ordinary_case/build products/$preview_resource_destination"
 run_binary_copy_mode "$binary_ordinary_case" NO NO "$preview_paths"
 assert_link \
-  "$binary_ordinary_case/build products/libStatic.a" \
+  "$binary_ordinary_target_dir/libStatic.a" \
   "$binary_ordinary_case/product parent/libStatic.a"
-[[ ! -e "$binary_ordinary_case/build products/First Framework.framework" ]] || \
+[[ ! -e "$binary_ordinary_target_dir/First Framework.framework" ]] || \
   fail "ordinary binary build staged a Preview framework"
+run_binary_copy_mode \
+  "$binary_ordinary_case" \
+  NO \
+  NO \
+  "$preview_paths" \
+  "$preview_resource_paths" \
+  YES
+[[ ! -e "$binary_ordinary_target_dir/Mixed Resources.bundle" ]] || \
+  fail "ordinary binary build staged a Preview resource bundle"
+[[ ! -e "$binary_ordinary_target_dir/$preview_resource_destination/Mixed Resources.bundle" ]] || \
+  fail "ordinary binary build staged a Preview resource bundle in a duplicated package directory"
+
 readonly binary_legacy_case="$test_root/copy-binary-legacy"
+readonly binary_legacy_target_dir="$binary_legacy_case/build products/$preview_resource_destination"
 run_binary_copy_mode "$binary_legacy_case" YES NO "$preview_paths"
-[[ ! -e "$binary_legacy_case/build products/First Framework.framework" ]] || \
+[[ ! -e "$binary_legacy_target_dir/First Framework.framework" ]] || \
   fail "legacy binary build staged a direct Preview framework"
-[[ ! -e "$binary_legacy_case/build products/libStatic.a/SwiftUIPreviewsFrameworks" ]] || \
+[[ ! -e "$binary_legacy_target_dir/libStatic.a/SwiftUIPreviewsFrameworks" ]] || \
   fail "legacy binary build staged a nested Preview framework"
+run_binary_copy_mode \
+  "$binary_legacy_case" \
+  YES \
+  NO \
+  "$preview_paths" \
+  "$preview_resource_paths" \
+  YES
+assert_equals \
+  localized-content \
+  "$(cat "$binary_legacy_target_dir/Mixed Resources.bundle/en.lproj/Localizable.strings")" \
+  "legacy Preview resource bundle localized content"
+assert_equals \
+  palette-content \
+  "$(cat "$binary_legacy_target_dir/PaletteAssets.bundle/Colors/Accent.colors")" \
+  "legacy transitive Preview resource bundle content"
+[[ ! -e "$binary_legacy_target_dir/$preview_resource_destination" ]] || \
+  fail "legacy Preview resource bundles were staged in a duplicated package directory"
+
 readonly binary_xojit_case="$test_root/copy-binary-xojit"
+readonly binary_xojit_target_dir="$binary_xojit_case/build products/$preview_resource_destination"
 run_binary_copy_mode "$binary_xojit_case" NO YES "$preview_paths"
 assert_link \
-  "$binary_xojit_case/build products/First Framework.framework" \
+  "$binary_xojit_target_dir/First Framework.framework" \
   "$first_framework"
 assert_link \
-  "$binary_xojit_case/build products/Second.framework" \
+  "$binary_xojit_target_dir/Second.framework" \
   "$second_framework"
-[[ -f "$binary_xojit_case/build products/First Framework.framework/Resources/value.txt" ]] || \
+[[ -f "$binary_xojit_target_dir/First Framework.framework/Resources/value.txt" ]] || \
   fail "XOJIT binary framework symlink is incomplete"
-[[ ! -e "$binary_xojit_case/build products/libStatic.a" ]] || \
+[[ ! -e "$binary_xojit_target_dir/libStatic.a" ]] || \
   fail "XOJIT copied a stale Bazel binary product"
+run_binary_copy_mode \
+  "$binary_xojit_case" \
+  NO \
+  YES \
+  "$preview_paths" \
+  "$preview_resource_paths" \
+  YES
+assert_equals \
+  compiled-model-content \
+  "$(cat "$binary_xojit_target_dir/Mixed Resources.bundle/Model.momd/contents")" \
+  "XOJIT Preview resource bundle compiled model content"
+assert_equals \
+  palette-content \
+  "$(cat "$binary_xojit_target_dir/PaletteAssets.bundle/Colors/Accent.colors")" \
+  "XOJIT transitive Preview resource bundle content"
+[[ ! -e "$binary_xojit_target_dir/$preview_resource_destination" ]] || \
+  fail "XOJIT Preview resource bundles were staged in a duplicated package directory"
+
+run_resource_copy_mode() {
+  local case_dir="$1"
+  local enable_previews="$2"
+  local enable_xojit_previews="$3"
+  local bundle_paths="$4"
+
+  env \
+    ACTION=build \
+    BAZEL_INTEGRATION_DIR="$repo_root/xcodeproj/internal/bazel_integration_files" \
+    BAZEL_OUTPUTS_PRODUCT= \
+    ENABLE_PREVIEWS="$enable_previews" \
+    ENABLE_XOJIT_PREVIEWS="$enable_xojit_previews" \
+    PREVIEW_FRAMEWORK_PATHS= \
+    PREVIEW_RESOURCE_BUNDLE_PATHS="$bundle_paths" \
+    TARGET_BUILD_DIR="$case_dir/build products" \
+    bash "$copy_outputs_script" _ ""
+}
+
+for mode in legacy xojit; do
+  enable_previews=NO
+  enable_xojit_previews=YES
+  if [[ "$mode" == legacy ]]; then
+    enable_previews=YES
+    enable_xojit_previews=NO
+  fi
+  resource_case="$test_root/real-resource-copy-$mode"
+  metadata_source="$resource_case/sources/Metadata Only.bundle"
+  content_source="$resource_case/sources/Content.bundle"
+  metadata_destination="$resource_case/build products/Metadata Only.bundle"
+  content_destination="$resource_case/build products/Content.bundle"
+  mkdir -p "$metadata_source" "$content_source/Nested.bundle"
+  printf '<plist version="1.0"><dict><key>CFBundleName</key><string>Metadata Only</string></dict></plist>\n' \
+    > "$metadata_source/Info.plist"
+  cp "$metadata_source/Info.plist" "$content_source/Info.plist"
+  cp "$metadata_source/Info.plist" "$content_source/Nested.bundle/Info.plist"
+  printf 'initial resource' > "$content_source/value.txt"
+  printf 'removed resource' > "$content_source/Nested.bundle/removed.txt"
+  touch -t 202001020304.05 "$content_source/value.txt"
+  resource_paths="\"$metadata_source\" \"$content_source\""
+
+  run_resource_copy_mode \
+    "$resource_case" "$enable_previews" "$enable_xojit_previews" "$resource_paths"
+  diff -r "$metadata_source" "$metadata_destination"
+  diff -r "$content_source" "$content_destination"
+  resource_mtime="$(stat -f %m "$content_destination/value.txt")"
+
+  run_resource_copy_mode \
+    "$resource_case" "$enable_previews" "$enable_xojit_previews" "$resource_paths"
+  diff -r "$content_source" "$content_destination"
+  assert_equals "$resource_mtime" "$(stat -f %m "$content_destination/value.txt")" \
+    "$mode unchanged resource timestamp"
+
+  printf 'updated resource' > "$content_source/value.txt"
+  touch -t 202001020304.06 "$content_source/value.txt"
+  mv "$content_source/Nested.bundle/removed.txt" "$resource_case/removed.txt"
+  printf 'stale destination resource' > "$content_destination/stale.txt"
+  run_resource_copy_mode \
+    "$resource_case" "$enable_previews" "$enable_xojit_previews" "$resource_paths"
+  diff -r "$metadata_source" "$metadata_destination"
+  diff -r "$content_source" "$content_destination"
+  [[ ! -e "$content_destination/stale.txt" && \
+     ! -e "$content_destination/Nested.bundle/removed.txt" ]] || \
+    fail "$mode retained stale resource files"
+
+  mv "$metadata_source/Info.plist" "$resource_case/removed-Info.plist"
+  if run_resource_copy_mode \
+    "$resource_case" "$enable_previews" "$enable_xojit_previews" "$resource_paths" \
+    >"$resource_case/missing.stdout" 2>"$resource_case/missing.stderr"; then
+    fail "$mode accepted a resource bundle without Info.plist"
+  fi
+  grep -q 'missing Info.plist' "$resource_case/missing.stderr" || \
+    fail "$mode did not diagnose missing resource metadata"
+done
+
 readonly ordinary_case="$test_root/copy-ordinary"
 run_copy_mode "$ordinary_case" NO NO "$preview_paths"
 [[ ! -e "$ordinary_case/build products/First Framework.framework" ]] || \
