@@ -468,6 +468,80 @@ assert_equals \
 [[ ! -e "$binary_xojit_target_dir/$preview_resource_destination" ]] || \
   fail "XOJIT Preview resource bundles were staged in a duplicated package directory"
 
+run_resource_copy_mode() {
+  local case_dir="$1"
+  local enable_previews="$2"
+  local enable_xojit_previews="$3"
+  local bundle_paths="$4"
+
+  env \
+    ACTION=build \
+    BAZEL_INTEGRATION_DIR="$repo_root/xcodeproj/internal/bazel_integration_files" \
+    BAZEL_OUTPUTS_PRODUCT= \
+    ENABLE_PREVIEWS="$enable_previews" \
+    ENABLE_XOJIT_PREVIEWS="$enable_xojit_previews" \
+    PREVIEW_FRAMEWORK_PATHS= \
+    PREVIEW_RESOURCE_BUNDLE_PATHS="$bundle_paths" \
+    TARGET_BUILD_DIR="$case_dir/build products" \
+    bash "$copy_outputs_script" _ ""
+}
+
+for mode in legacy xojit; do
+  enable_previews=NO
+  enable_xojit_previews=YES
+  if [[ "$mode" == legacy ]]; then
+    enable_previews=YES
+    enable_xojit_previews=NO
+  fi
+  resource_case="$test_root/real-resource-copy-$mode"
+  metadata_source="$resource_case/sources/Metadata Only.bundle"
+  content_source="$resource_case/sources/Content.bundle"
+  metadata_destination="$resource_case/build products/Metadata Only.bundle"
+  content_destination="$resource_case/build products/Content.bundle"
+  mkdir -p "$metadata_source" "$content_source/Nested.bundle"
+  printf '<plist version="1.0"><dict><key>CFBundleName</key><string>Metadata Only</string></dict></plist>\n' \
+    > "$metadata_source/Info.plist"
+  cp "$metadata_source/Info.plist" "$content_source/Info.plist"
+  cp "$metadata_source/Info.plist" "$content_source/Nested.bundle/Info.plist"
+  printf 'initial resource' > "$content_source/value.txt"
+  printf 'removed resource' > "$content_source/Nested.bundle/removed.txt"
+  touch -t 202001020304.05 "$content_source/value.txt"
+  resource_paths="\"$metadata_source\" \"$content_source\""
+
+  run_resource_copy_mode \
+    "$resource_case" "$enable_previews" "$enable_xojit_previews" "$resource_paths"
+  diff -r "$metadata_source" "$metadata_destination"
+  diff -r "$content_source" "$content_destination"
+  resource_mtime="$(stat -f %m "$content_destination/value.txt")"
+
+  run_resource_copy_mode \
+    "$resource_case" "$enable_previews" "$enable_xojit_previews" "$resource_paths"
+  diff -r "$content_source" "$content_destination"
+  assert_equals "$resource_mtime" "$(stat -f %m "$content_destination/value.txt")" \
+    "$mode unchanged resource timestamp"
+
+  printf 'updated resource' > "$content_source/value.txt"
+  touch -t 202001020304.06 "$content_source/value.txt"
+  mv "$content_source/Nested.bundle/removed.txt" "$resource_case/removed.txt"
+  printf 'stale destination resource' > "$content_destination/stale.txt"
+  run_resource_copy_mode \
+    "$resource_case" "$enable_previews" "$enable_xojit_previews" "$resource_paths"
+  diff -r "$metadata_source" "$metadata_destination"
+  diff -r "$content_source" "$content_destination"
+  [[ ! -e "$content_destination/stale.txt" && \
+     ! -e "$content_destination/Nested.bundle/removed.txt" ]] || \
+    fail "$mode retained stale resource files"
+
+  mv "$metadata_source/Info.plist" "$resource_case/removed-Info.plist"
+  if run_resource_copy_mode \
+    "$resource_case" "$enable_previews" "$enable_xojit_previews" "$resource_paths" \
+    >"$resource_case/missing.stdout" 2>"$resource_case/missing.stderr"; then
+    fail "$mode accepted a resource bundle without Info.plist"
+  fi
+  grep -q 'missing Info.plist' "$resource_case/missing.stderr" || \
+    fail "$mode did not diagnose missing resource metadata"
+done
+
 readonly ordinary_case="$test_root/copy-ordinary"
 run_copy_mode "$ordinary_case" NO NO "$preview_paths"
 [[ ! -e "$ordinary_case/build products/First Framework.framework" ]] || \

@@ -11,10 +11,19 @@ apple_resource_bundle(
 )
 
 apple_resource_bundle(
+    name = "MetadataOnlyResources",
+    bundle_id = "com.example.rules-xcodeproj.metadata-only",
+    infoplists = ["Info.plist"],
+)
+
+apple_resource_bundle(
     name = "RawResources",
     bundle_id = "com.example.rules-xcodeproj.dual-aspect",
     infoplists = ["Info.plist"],
-    resources = glob(["Resources/**"]) + [":NestedResources"],
+    resources = glob(["Resources/**"]) + [
+        ":MetadataOnlyResources",
+        ":NestedResources",
+    ],
 )
 
 dual_aspect_resource_bundle_test(

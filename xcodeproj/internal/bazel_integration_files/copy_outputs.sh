@@ -146,11 +146,6 @@ stage_preview_resource_bundles() {
       echo >&2 "error: Preview resource bundle is missing Info.plist: $bundle_path"
       return 1
     fi
-    if [[ -z "$(find "$bundle_path" -mindepth 1 ! -name Info.plist -print -quit)" ]]; then
-      echo >&2 "error: Preview resource bundle has no contents: $bundle_path"
-      return 1
-    fi
-
     for (( seen_bundle_index=0; \
            seen_bundle_index<${#bundle_names[@]}; \
            seen_bundle_index++ )); do
@@ -187,8 +182,7 @@ stage_preview_resource_bundles() {
       "$destination_dir"
 
     local destination="$destination_dir/${bundle_names[bundle_index]}"
-    if [[ ! -f "$destination/Info.plist" || \
-          -z "$(find "$destination" -mindepth 1 ! -name Info.plist -print -quit)" ]]; then
+    if [[ ! -f "$destination/Info.plist" ]]; then
       echo >&2 "error: Preview resource bundle was not copied completely: $destination"
       return 1
     fi

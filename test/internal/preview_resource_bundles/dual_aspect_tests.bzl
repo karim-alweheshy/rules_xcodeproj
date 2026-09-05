@@ -123,6 +123,8 @@ test -f "$bundle/Info.plist"
 test -f "$bundle/Assets.car"
 test -f "$bundle/en.lproj/Localizable.strings"
 test "$(cat "$bundle/NestedResources.bundle/value.txt")" = nested-resource-value
+test -f "$bundle/MetadataOnlyResources.bundle/Info.plist"
+test -z "$(find "$bundle/MetadataOnlyResources.bundle" -mindepth 1 ! -name Info.plist -print -quit)"
 test ! -e "$bundle/Colors.xcassets"
 test "$(plutil -extract CFBundleIdentifier raw "$bundle/Info.plist")" = \
   com.example.rules-xcodeproj.dual-aspect
