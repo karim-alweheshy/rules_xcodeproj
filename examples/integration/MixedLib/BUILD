@@ -4,7 +4,7 @@ load(
 )
 load(
     "@build_bazel_rules_apple//apple:resources.bzl",
-    "apple_precompiled_resource_bundle",
+    "apple_resource_bundle",
 )
 load(
     "@build_bazel_rules_swift//mixed_language:mixed_language_library.bzl",
@@ -18,14 +18,18 @@ ios_build_test(
     visibility = ["@rules_xcodeproj//xcodeproj:generated"],
 )
 
-apple_precompiled_resource_bundle(
+apple_resource_bundle(
+    name = "MixedLibNestedResourceBundle",
+    bundle_name = "MixedLibNestedResources",
+    resources = ["NestedResources/value.txt"],
+)
+
+apple_resource_bundle(
     name = "MixedLibResourceBundle",
     bundle_name = "MixedLibResources",
-    resources = glob(
-        [
-            "Resources/**",
-        ],
-    ),
+    resources = glob(["Resources/**"]) + [
+        ":MixedLibNestedResourceBundle",
+    ],
 )
 
 mixed_language_library(
@@ -36,7 +40,10 @@ mixed_language_library(
     enable_modules = True,
     module_name = "MixedLib",
     swift_copts = ["-application-extension"],
-    swift_srcs = ["MixedSwift.swift"],
+    swift_srcs = [
+        "MixedResourcePreviews.swift",
+        "MixedSwift.swift",
+    ],
     tags = ["manual"],
     visibility = [
         "//Lib:__subpackages__",
